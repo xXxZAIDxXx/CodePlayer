@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="jquery.min.js"></script>
+    <script src="jquery-ui-1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="jquery-ui-1.12.1/jquery-ui.css">
+ 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Z-CodePlayer</title>
+
+
+
+    <style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+}
+
+li {
+  list-style: none;
+  float: left;
+}
+
+a {
+  color: black;
+}
+
+.clear {
+  clear: both;
+}
+
+#logo {
+  font-weight: bold;
+  padding: 15px 0 0 15px;
+  float: left;
+  color: antiquewhite;
+}
+
+#menuBar {
+  height: 50px;
+  width: 100%;
+  background-color: rgb(18, 66, 89);
+  border-bottom: 1px solid #C8C8C8;
+  box-sizing: border-box;
+  
+  
+}
+
+#buttonDiv {
+  float: right;
+  padding: 5px 15px 0 0;
+  color: antiquewhite;
+}
+
+#runButton {
+  font-size: 110%;
+  color: rgb(18, 66, 89);
+  background-color:  antiquewhite;
+}
+
+
+
+#toggleDiv {
+  height: 40px;
+  margin: auto;
+  width:25%;
+  box-sizing: border-box;
+  padding-top: 5px;
+  position: relative;
+  
+}
+
+#toggles {
+  float: left;
+  margin: 0;
+  list-style: none;
+  padding-left: 0;
+  box-sizing: border-box;
+  border: 1px solid rgb(254, 254, 254); 
+  border-radius: 5px;
+}
+
+#toggles li {
+  float: left;
+  border-right: 1px solid rgb(255, 255, 255);
+  box-sizing: border-box;
+  padding: 9px 10px 6px 9px;
+  
+}
+
+.codeContainer {
+  height: 100%;
+  width: 50%;
+  float: left;
+  position: relative;
+  background-color: bisque;
+}
+
+.codeContainer textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-right: 1px solid rgb(16, 133, 39);
+  font-family: SourceCodeProRegular, Menlo, Monaco, consolas, monospace;
+  font-size: 90%;
+  box-sizing: border-box;
+  padding: 30px 0 5px 5px;
+  background-color: bisque;
+  resize:none;
+  
+}
+
+.codeLabel {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: #124259;
+  
+  
+}
+
+#cssContainer,
+#jsContainer {
+  display: none;
+}
+
+iframe {
+  height: 100%;
+  position: relative;
+  width: 100%;
+  border: none;
+  padding-top: 30px;
+}
+
+.selected {
+  background-color: rgb(213, 186, 32);
+  color:bisque;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: #000000;
+}
+    </style>
+</head>
+<body>
+        <div id="container">
+                <div id="menuBar">
+                  <div id="logo">
+                    CodePlayer
+                  </div>
+              
+                  <div id="buttonDiv">
+                    <button id="runButton">Run</button>
+                  </div>
+              
+                  <div id="toggleDiv">
+                    <ul id="toggles">
+                      <a href="#">
+                        <li class="toggle selected">HTML</li>
+                      </a>
+                      <a href="#">
+                        <li class="toggle">CSS</li>
+                      </a>
+                      <a href="#">
+                        <li class="toggle">JS</li>
+                      </a>
+                      <a href="#">
+                        <li class="toggle selected" style="border:none">Result</li>
+                      </a>
+                    </ul>
+                  </div>
+              
+              
+                </div>
+              
+                <div class="clear"></div>
+              
+                <div class="codeContainer" id="htmlContainer">
+                  <div class="codeLabel">HTML</div>
+                  <textarea id="htmlCode"></textarea>
+                </div>
+              
+                <div class="codeContainer" id="cssContainer">
+                  <div class="codeLabel">CSS</div>
+                  <textarea id="cssCode"></textarea>
+                </div>
+              
+                <div class="codeContainer" id="jsContainer">
+                  <div class="codeLabel">Javascript</div>
+                  <textarea id="jsCode"></textarea>
+                </div>
+              
+                <div class="codeContainer" id="resultContainer">
+                  <div class="codeLabel">Output</div>
+                  <iframe id="resultFrame"></iframe>
+                </div>
+              </div>
+<script>
+
+        var windowHeight = $(window).height();
+        var menuBarHeight = $("#menuBar").height();
+        
+        // code container height calculated
+        var codeContainerHeight = windowHeight - menuBarHeight;
+        $(".codeContainer").height(codeContainerHeight + "px");
+        
+        // Toggling between HTML, CSS, JS and Output
+        $(".toggle").click(function(event) {
+          // toggle items in menuBar
+          $(this).toggleClass("selected");
+        
+          // get html of list item (html, css, js or result) in lowercase
+          var activeDiv = $(this).html().toLowerCase();
+        
+          // combine it to one of the cor container id's (htmlContainer, cssContainer, etc.)
+          // toggle show or hide
+          $("#" + activeDiv + "Container").toggle();
+        
+          // count the container id's which are not hidden (display != none)
+          var showingDivs = $(".codeContainer").filter(function() {
+            return ($(this).css("display") != "none");
+          }).length;
+        
+          // 100% width divided by active divs
+          var width = 100 / showingDivs;
+        
+          // set the width
+          $(".codeContainer").width(width + "%");
+        
+        });
+        
+        $("#runButton").click(function(event) {
+          // find html tag in iframe and set this to html("text")
+          $("iframe").contents().find("html").html('<style>' + $("#cssCode").val() + '</style>' + $("#htmlCode").val());
+        
+          // run javascript code in iframe
+          document.getElementById("resultFrame").contentWindow.eval($("#jsCode").val());
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+</body>
+</html>
