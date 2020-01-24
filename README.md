@@ -1,5 +1,5 @@
 **CodePlayer**
-link : https://xxxzaidxxx.github.io/CodePlayer-/
+link : https://xxxzaidxxx.github.io/CodePlayer/
 ---
 ## build with Javascript/jQuery.
 
