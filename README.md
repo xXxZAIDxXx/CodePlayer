@@ -1,7 +1,7 @@
 **CodePlayer**
 link : https://xxxzaidxxx.github.io/CodePlayer-/
 ---
-## build with Javascript using jQuery.
+## build with Javascript/jQuery.
 
 >>>
 
